@@ -1,0 +1,27 @@
+{
+  "name": "challenge",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Kubernetes-based microservices system",
+  "workspaces": [
+    "libs/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build:types": "cd libs/types && npm run build",
+    "build:web-server": "cd apps/web-server && npm run build",
+    "build:management-api": "cd apps/management-api && npm run build",
+    "build": "npm run build:types && npm run build:web-server && npm run build:management-api",
+    "dev:front": "cd apps/frontend && npm run dev",
+    "dev:web-server": "cd apps/web-server && npm run start:dev",
+    "dev:management-api": "cd apps/management-api && npm run start:dev",
+    "install:all": "npm install && cd libs/types && npm install && cd ../../apps/web-server && npm install && cd ../management-api && npm install"
+  },
+  "keywords": [
+    "microservices",
+    "kubernetes",
+    "kafka"
+  ],
+  "author": "",
+  "license": "ISC"
+}
