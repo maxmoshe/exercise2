@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base/frontend
+
+images:
+  - name: frontend:latest
+    newName: your-registry.io/frontend
+    newTag: v1.0.0
+
+# Example: Add environment variables for production
+# patches:
+#   - patch: |-
+#       - op: add
+#         path: /spec/template/spec/containers/0/env/-
+#         value:
+#           name: API_URL
+#           value: "https://api.production.example.com"
+#     target:
+#       kind: Deployment
+#       name: frontend

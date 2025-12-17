@@ -1,22 +1,36 @@
-FROM node:20-alpine AS development-dependencies-env
-COPY . /app
-WORKDIR /app
-RUN npm ci
+# Build stage
+FROM node:20-alpine AS builder
 
-FROM node:20-alpine AS production-dependencies-env
-COPY ./package.json package-lock.json /app/
 WORKDIR /app
-RUN npm ci --omit=dev
 
-FROM node:20-alpine AS build-env
-COPY . /app/
-COPY --from=development-dependencies-env /app/node_modules /app/node_modules
-WORKDIR /app
-RUN npm run build
+# Copy root package files
+COPY package*.json ./
+COPY tsconfig.json ./
 
-FROM node:20-alpine
-COPY ./package.json package-lock.json /app/
-COPY --from=production-dependencies-env /app/node_modules /app/node_modules
-COPY --from=build-env /app/build /app/build
-WORKDIR /app
-CMD ["npm", "run", "start"]
+# Copy workspace packages
+COPY libs/types ./libs/types
+COPY apps/frontend ./apps/frontend
+
+# Install dependencies for all workspaces
+RUN npm install
+
+# Build types library first
+RUN cd libs/types && npm run build
+
+# Build frontend
+RUN cd apps/frontend && npm run build
+
+# Production stage - nginx
+FROM nginx:alpine
+
+# Copy built static files
+COPY --from=builder /app/apps/frontend/build/client /usr/share/nginx/html
+
+# Copy nginx configuration
+COPY apps/frontend/nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]

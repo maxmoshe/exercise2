@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base/web-server
+
+images:
+  - name: web-server:latest
+    newName: your-registry.io/web-server
+    newTag: v1.0.0
+
+# Example: Override replicas or resources for production
+# patches:
+#   - patch: |-
+#       - op: replace
+#         path: /spec/template/spec/containers/0/resources/limits/cpu
+#         value: "200m"
+#     target:
+#       kind: Deployment
+#       name: web-server

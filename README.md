@@ -1,6 +1,24 @@
 # Home assignment
 
+## Run:
 
+### Requirements:
+*   kind: https://kind.sigs.k8s.io/
+    `brew install kind`
+    or 
+    https://kind.sigs.k8s.io/docs/user/quick-start/#installing-from-release-binaries
+
+*   kubectl
+
+
+
+## Develop locally:
+```
+docker compose up
+npm run dev:front
+npm run dev:web-server
+npm run dev:management-api
+```
 
 
 web-server should extract userId from bearer token.

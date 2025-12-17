@@ -1,0 +1,19 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: management-api-kafka-scaler
+spec:
+  scaleTargetRef:
+    name: management-api
+  minReplicaCount: 1
+  # scale up to `buyOrders` topic partition count
+  maxReplicaCount: 2
+  triggers:
+    - type: kafka
+      metadata:
+        # broker list
+        bootstrapServers: kafka.default.svc.cluster.local:9092
+        consumerGroup: management-api-consumer-group
+        topic: buyOrders
+        lagThreshold: "10"
+        offsetResetPolicy: latest

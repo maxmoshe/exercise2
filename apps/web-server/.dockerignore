@@ -1,0 +1,14 @@
+node_modules
+dist
+npm-debug.log
+.env
+.git
+.gitignore
+README.md
+test
+coverage
+*.md
+.prettierrc
+eslint.config.mjs
+tsconfig.json
+tsconfig.build.json

@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: exercise-infra
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - list:
+      elements:
+      - service: kafka
+      - service: mongodb
+
+  template:
+    metadata:
+      name: '{{.service}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/maxmoshe/exercise2.git
+        targetRevision: HEAD
+        path: argocd/local/{{.service}}
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{.service}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
