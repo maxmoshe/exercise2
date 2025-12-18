@@ -7,7 +7,7 @@ resources:
 images:
   - name: frontend:latest
     newName: docker.io/nimroddd/frontend
-    newTag: latest
+    newTag: 2d7160e97f0798f60ab4881745735de607ec7d20
 
 # Example: Add environment variables for production
 # patches:
