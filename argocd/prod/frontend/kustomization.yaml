@@ -6,8 +6,8 @@ resources:
 
 images:
   - name: frontend:latest
-    newName: your-registry.io/frontend
-    newTag: v1.0.0
+    newName: docker.io/nimroddd/frontend
+    newTag: latest
 
 # Example: Add environment variables for production
 # patches:

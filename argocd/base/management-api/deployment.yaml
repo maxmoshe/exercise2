@@ -40,9 +40,9 @@ spec:
             - name: PORT
               value: "8080"
             - name: KAFKA_BROKERS
-              value: "kafka.default.svc.cluster.local:9092"
+              value: "kafka.kafka.svc.cluster.local:9092"
             - name: MONGODB_URI
-              value: "mongodb://mongodb.default.svc.cluster.local:27017/purchases"
+              value: "mongodb://mongodb.mongodb.svc.cluster.local:27017/purchases"
           resources:
             requests:
               memory: "128Mi"
