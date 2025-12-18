@@ -23,8 +23,8 @@ export const Shop = () => {
         const randomNumber = Math.random()
         const weight = price / (STARTING_PRICE * 2)
         const change = STARTING_PRICE * (randomNumber - weight) * MAX_CHANGE
-
-        setPrice(price + change)
+        price += change
+        setPrice(price)
     }
 
     useEffect(() => {
