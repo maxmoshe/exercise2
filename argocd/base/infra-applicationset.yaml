@@ -19,7 +19,7 @@ spec:
       project: default
       source:
         repoURL: https://github.com/maxmoshe/exercise2.git
-        targetRevision: argocd-manifests # HEAD ####
+        targetRevision: HEAD
         path: argocd/local/{{.service}}
       destination:
         server: https://kubernetes.default.svc

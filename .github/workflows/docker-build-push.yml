@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - argocd-manifests
 
 env:
   DOCKERHUB_USERNAME: nimroddd
