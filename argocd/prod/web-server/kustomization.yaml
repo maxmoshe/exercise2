@@ -6,8 +6,8 @@ resources:
 
 images:
   - name: web-server:latest
-    newName: your-registry.io/web-server
-    newTag: v1.0.0
+    newName: docker.io/nimroddd/web-server
+    newTag: latest
 
 # Example: Override replicas or resources for production
 # patches:

@@ -82,9 +82,17 @@ up:	check-prereqs
 
 	@echo "Waiting for ArgoCD to sync and create deployments... See progress in argocd dashboard above ^"
 	@sleep 10
+	@until kubectl --context $(KUBE_CONTEXT) get statefulset mongodb -n mongodb 2>/dev/null; do sleep 2; done
+	@until kubectl --context $(KUBE_CONTEXT) get statefulset zookeeper -n kafka 2>/dev/null; do sleep 2; done
+	@until kubectl --context $(KUBE_CONTEXT) get statefulset kafka -n kafka 2>/dev/null; do sleep 2; done
 	@until kubectl --context $(KUBE_CONTEXT) get deployment frontend -n default 2>/dev/null; do sleep 2; done
 	@until kubectl --context $(KUBE_CONTEXT) get deployment web-server -n default 2>/dev/null; do sleep 2; done
 	@until kubectl --context $(KUBE_CONTEXT) get deployment management-api -n default 2>/dev/null; do sleep 2; done
+
+	@echo "Waiting for infrastructure..."
+	@kubectl --context $(KUBE_CONTEXT) wait --for=jsonpath='{.status.readyReplicas}'=1 --timeout=300s statefulset/mongodb -n mongodb
+	@kubectl --context $(KUBE_CONTEXT) wait --for=jsonpath='{.status.readyReplicas}'=1 --timeout=300s statefulset/zookeeper -n kafka
+	@kubectl --context $(KUBE_CONTEXT) wait --for=jsonpath='{.status.readyReplicas}'=1 --timeout=300s statefulset/kafka -n kafka
 
 	@echo "Waiting for services..."
 	@kubectl --context $(KUBE_CONTEXT) wait --for=condition=available --timeout=300s deployment/frontend -n default

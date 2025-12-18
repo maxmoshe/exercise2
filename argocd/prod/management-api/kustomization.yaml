@@ -6,8 +6,8 @@ resources:
 
 images:
   - name: management-api:latest
-    newName: your-registry.io/management-api
-    newTag: v1.0.0
+    newName: docker.io/nimroddd/management-api
+    newTag: latest
 
 # Example: Override resources for production
 # patches:

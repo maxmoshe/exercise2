@@ -10,27 +10,30 @@ const userId = '04604a60-1e20-4cb0-9fc4-5b4076fe2cbd'
 
 
 export const Shop = () => {
-    let price = STARTING_PRICE
-
     const [buyIsLoading, setBuyIsLoading] = useState(false)
     const [getBuysIsLoading, setGetBuyIsLoading] = useState(false)
-    const [displayPrice, setPrice] = useState(price)
+    const [displayPrice, setDisplayPrice] = useState(STARTING_PRICE)
     const [buyOrders, setBuyOrders] = useState<AcceptedBuyRequest[]>([])
     const [purchaseHistory, setPurchaseHistory] = useState<PurchaseEvent[]>([])
+    const [mosheHired, setMosheHired] = useState(false)
+    const [modifier, setModifier] = useState(1)
 
 
-    // move up to 2% of starting price a second, weighted toward start price. 
+    // move up to 2% of starting price a second, weighted toward start price.
     const calcNewPrice = () => {
-        const randomNumber = Math.random()
-        const weight = price / (STARTING_PRICE * 2)
-        const change = STARTING_PRICE * (randomNumber - weight) * MAX_CHANGE
-        price += change
-        setPrice(price)
+        setDisplayPrice(currentPrice => {
+            const randomNumber = Math.random()
+            const weight = currentPrice / (STARTING_PRICE * 2)
+            const change = STARTING_PRICE * (randomNumber * modifier - weight) * MAX_CHANGE
+            console.log(modifier)
+            return currentPrice + change
+        })
     }
 
     useEffect(() => {
-        setInterval(calcNewPrice, 1000)
-    }, [])
+        const interval = setInterval(calcNewPrice, 1000)
+        return () => clearInterval(interval)
+    }, [modifier])
 
     const handleBuy = async (price: number) => {
         const data: BuyRequest = {
@@ -53,16 +56,20 @@ export const Shop = () => {
             if (response.ok) {
                 const responseData: BuyResponse = await response.json()
                 setBuyOrders((prev) => [...prev, { ...data, id: responseData.id }])
+            } else {
+                const errorText = await response.text()
+                alert(`Error making purchase: ${response.status} - ${errorText}`)
             }
         } catch (error) {
             console.error('Error making purchase:', error)
+            alert(`Error making purchase: ${error instanceof Error ? error.message : 'Unknown error'}`)
         } finally {
             setBuyIsLoading(false)
         }
     }
 
     const handleGetAllBuys = async () => {
-        setBuyIsLoading(true)
+        setGetBuyIsLoading(true)
         try {
             const response = await fetch(`${API_URL}/getAllUserBuys/${userId}`)
 
@@ -74,11 +81,15 @@ export const Shop = () => {
                 console.log(purchases)
                 console.log(buyOrders)
                 setBuyOrders(orders => orders.filter(order => !purchases.some(purchase => order.id === purchase.id)))
+            } else {
+                const errorText = await response.text()
+                alert(`Error fetching purchases: ${response.status} - ${errorText}`)
             }
         } catch (error) {
             console.error('Error fetching purchases:', error)
+            alert(`Error fetching purchases: ${error instanceof Error ? error.message : 'Unknown error'}`)
         } finally {
-            setBuyIsLoading(false)
+            setGetBuyIsLoading(false)
         }
     }
 
@@ -98,9 +109,9 @@ export const Shop = () => {
             <button
                 className="p-2 px-3 mx-1 my-2 bg-blue-400 rounded-md"
                 onClick={handleGetAllBuys}
-                disabled={buyIsLoading}
+                disabled={getBuysIsLoading}
             >
-                Get All Buys
+                {getBuysIsLoading ? 'Loading...' : 'Get All Buys'}
             </button>
         </div>
         <div className="mb-10">
@@ -124,6 +135,12 @@ export const Shop = () => {
                 ).reverse()}
             </div>
         </div>
+        {!mosheHired && <button
+            className="p-2 px-3 mx-1 my-2 bg-gray-500 rounded-md absolute top-5"
+            onClick={() => { setMosheHired(true); setModifier(1.4) }}
+        >
+            Hire Moshe
+        </button>}
     </div>
 
 }
