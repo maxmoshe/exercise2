@@ -12,7 +12,8 @@ const userId = '04604a60-1e20-4cb0-9fc4-5b4076fe2cbd'
 export const Shop = () => {
     let price = STARTING_PRICE
 
-    const [isLoading, setIsLoading] = useState(false)
+    const [buyIsLoading, setBuyIsLoading] = useState(false)
+    const [getBuysIsLoading, setGetBuyIsLoading] = useState(false)
     const [displayPrice, setPrice] = useState(price)
     const [buyOrders, setBuyOrders] = useState<AcceptedBuyRequest[]>([])
     const [purchaseHistory, setPurchaseHistory] = useState<PurchaseEvent[]>([])
@@ -39,7 +40,7 @@ export const Shop = () => {
             price
         }
 
-        setIsLoading(true)
+        setBuyIsLoading(true)
         try {
             const response = await fetch(`${API_URL}/buy`, {
                 method: 'POST',
@@ -56,12 +57,12 @@ export const Shop = () => {
         } catch (error) {
             console.error('Error making purchase:', error)
         } finally {
-            setIsLoading(false)
+            setBuyIsLoading(false)
         }
     }
 
     const handleGetAllBuys = async () => {
-        setIsLoading(true)
+        setBuyIsLoading(true)
         try {
             const response = await fetch(`${API_URL}/getAllUserBuys/${userId}`)
 
@@ -77,7 +78,7 @@ export const Shop = () => {
         } catch (error) {
             console.error('Error fetching purchases:', error)
         } finally {
-            setIsLoading(false)
+            setBuyIsLoading(false)
         }
     }
 
@@ -90,14 +91,14 @@ export const Shop = () => {
             <button
                 className="p-2 px-3 mx-1 my-2 bg-blue-500 rounded-md"
                 onClick={() => { handleBuy(displayPrice) }}
-                disabled={isLoading}
+                disabled={buyIsLoading}
             >
-                {isLoading ? 'Loading...' : 'Buy'}
+                {buyIsLoading ? 'Loading...' : 'Buy'}
             </button>
             <button
                 className="p-2 px-3 mx-1 my-2 bg-blue-400 rounded-md"
                 onClick={handleGetAllBuys}
-                disabled={isLoading}
+                disabled={buyIsLoading}
             >
                 Get All Buys
             </button>

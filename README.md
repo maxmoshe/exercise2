@@ -11,6 +11,21 @@
 *   kubectl
 
 
+run
+`make up`
+
+to build docker images locally and use them instead: 
+`make up ENV=local`
+
+Should be idempotent - you can run it again if it fails, without needing to `make down`
+
+### troubleshooting:
+if port-forwarding breaks, you can use:
+```
+ make port-forward-argoc
+ make port-forward-dashboar
+```
+
 
 ## Develop locally:
 ```
